@@ -14,14 +14,26 @@ import org.hibernate.cfg.Configuration;
 public class Util {
     private static SessionFactory sessionFactory;
     private static Session session;
+    private static Transaction trans;
     
-    public static Session beginSession(){
+    public static void beginTrans(){
+        trans = session.beginTransaction();
+    }
+    
+    public static void commitTrans(){
+        trans.commit();
+    }
+    
+    public static Transaction getTrans(){
+        return trans;
+    }
+    
+    public static void beginSession(){
         sessionFactory = new Configuration()
                 .configure() // configures settings from hibernate.cfg.xml
                 .buildSessionFactory();
         
         session = sessionFactory.openSession();
-        return session;
     }
     public static void endSession(){
         session.close();
