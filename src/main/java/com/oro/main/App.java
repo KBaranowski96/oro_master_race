@@ -6,6 +6,8 @@
 package com.oro.main;
 
 import com.oro.entity.User;
+import com.oro.util.UserUtil;
+import com.oro.util.Util;
 import org.hibernate.*;
 import org.hibernate.cfg.Configuration;
 /**
@@ -15,17 +17,11 @@ import org.hibernate.cfg.Configuration;
 public class App {
      public static void main( String[] args )
     {
-        SessionFactory sessionFactory;
-        sessionFactory = new Configuration()
-                .configure() // configures settings from hibernate.cfg.xml
-                .buildSessionFactory();
-
-        Session session = sessionFactory.openSession();
-
-        Transaction tx = session.beginTransaction();
-        User user = new User("root","root","root");
-        session.save(user);
-        tx.commit();
-        session.close();
+        Util util = new Util();
+        util.beginSession();
+        
+        UserUtil.createUser(util.getSession());
+        
+        util.endSession();
     }    
 }
