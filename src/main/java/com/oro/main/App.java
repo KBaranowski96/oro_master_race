@@ -1,9 +1,11 @@
+package com.oro.main;
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.oro.main;
+
 
 import com.oro.entity.User;
 import com.oro.util.UserUtil;
@@ -14,32 +16,47 @@ import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import org.hibernate.*;
 import org.hibernate.cfg.Configuration;
+import org.hibernate.criterion.Restrictions;
 /**
  *
  * @author Kamil
  */
-public class App extends Util {
+public class App{
+    private static User currentUser;
+    private static int flag = 0;
     public static void main(String[] args){
-        beginSession();
+        Util.openSession();
+        UserUtil.createUser("root", "root", "admin");
         
-        UserUtil.createUser(getSession());
-        //login(getSession());
+        login();
         
-        endSession();
     }    
-    public static void login(Session session){
+    
+    public static void login(){
         Scanner sc = new Scanner(System.in);
         System.out.println("Type Login");
         String name = sc.nextLine();
         System.out.println("Type Password");
         String pass = sc.nextLine();
         sc.close();
-       
-        beginTrans();
-        String hql = "SELECT * FROM user WHERE name = " + name +
-                " AND password = " + pass;
-        TypedQuery<User> query = session.createQuery(hql);
-        List<User> result = query.getResultList();
-        System.out.println(result.toString());    
+        currentUser = UserUtil.getUserByUsername(name);
+        if(currentUser == null){
+            signUp(name);
+        }else if(currentUser.getPassword() != pass){
+            System.out.println("Wrong password");
+            ++flag;
+            System.exit(0);
+        }
+        System.out.println("You have successfully logged in!");       
+    }
+    
+    public static void signUp(String name){
+        Scanner sc2 = new Scanner(System.in);
+        System.out.println("You do not have an account");
+        System.out.println("Register now");
+        System.out.println("Type new password");
+        String pass = sc2.nextLine();
+        UserUtil.createUser(name, pass, "casual");
+        System.out.println("Succesfuly registered");
     }
 }

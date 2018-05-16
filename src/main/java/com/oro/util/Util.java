@@ -14,32 +14,49 @@ import org.hibernate.cfg.Configuration;
 public class Util {
     private static SessionFactory sessionFactory;
     private static Session session;
-    private static Transaction trans;
-    
-    public static void beginTrans(){
-        trans = session.beginTransaction();
+
+    public static SessionFactory getSessionFactory() {
+        return sessionFactory;
     }
-    
-    public static void commitTrans(){
-        trans.commit();
-    }
-    
-    public static Transaction getTrans(){
-        return trans;
-    }
-    
-    public static void beginSession(){
-        sessionFactory = new Configuration()
-                .configure() // configures settings from hibernate.cfg.xml
-                .buildSessionFactory();
-        
-        session = sessionFactory.openSession();
-    }
-    public static void endSession(){
-        session.close();
-    }
+
     public static Session getSession(){
         return session;
     }
-       
+
+    public static Session prepareSession() {
+        openTransaction();
+        return session;
+    }
+
+    public static void addToSession(Object e) {
+        session.save(e);
+    }
+
+    public static void commit() {
+        if(session.isOpen() && session.getTransaction().isActive()){
+            session.getTransaction().commit();
+        }
+    }
+    private static void openTransaction() {
+        if (isOpenSession() || !session.getTransaction().isActive()) {
+            session.beginTransaction();
+        }
+    }
+
+    private static boolean isOpenSession(){
+        if (session == null || !session.isOpen()) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    public static void openSession() {
+        sessionFactory = new Configuration().configure().buildSessionFactory();
+        session = sessionFactory.openSession();
+    }
+
+    public static void closeSession() {
+        session.close();
+    }
 }
