@@ -37,8 +37,9 @@ public class Util {
             session.getTransaction().commit();
         }
     }
+    
     private static void openTransaction() {
-        if (isOpenSession() || !session.getTransaction().isActive()) {
+        if (isOpenSession() && !session.getTransaction().isActive()) {
             session.beginTransaction();
         }
     }

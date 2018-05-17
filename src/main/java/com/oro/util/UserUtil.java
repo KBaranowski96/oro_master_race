@@ -31,7 +31,6 @@ public class UserUtil extends Util{
 
     public static User createUser(String name, String password, String role){
         prepareSession();
-        
         User user = new User(name,password,role);
         
         addToSession(user);
