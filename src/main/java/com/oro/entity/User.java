@@ -15,9 +15,9 @@ import javax.persistence.*;
 @Table(name="User")
 public class User {
     @Id
-    @Column(name="Id")
+    @Column(name="ID")
     @GeneratedValue(strategy=GenerationType.IDENTITY)
-    private long id;
+    private long userid;
     
     @Column(name="Name")
     private String name;
@@ -38,11 +38,11 @@ public class User {
     }
 
     public long getId() {
-        return id;
+        return userid;
     }
 
-    public void setId(long id) {
-        this.id = id;
+    public void setId(long userid) {
+        this.userid = userid;
     }
 
     public String getName() {
@@ -71,7 +71,7 @@ public class User {
 
     @Override
     public String toString() {
-        return "User{" + "id=" + id + ", name=" + name + ", password=" + password + ", role=" + role + '}';
+        return "User{" + "id=" + userid + ", name=" + name + ", password=" + password + ", role=" + role + '}';
     }
     
 }
