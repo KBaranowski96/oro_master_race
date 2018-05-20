@@ -14,33 +14,49 @@ import javax.persistence.*;
 @Table(name="Transaction")
 public class Transaction {   
     @Id
-    @Column(name="ID")
+    @Column(name="TransactionID")
     @GeneratedValue(strategy=GenerationType.IDENTITY)
-    private long id;
+    private Integer transactionid;
     
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "UserID")
+    private User user;
     
-    @Column(name="UserID")
-    private long userid;
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name="BookID")
+    private Stock stockDetails;
 
-    public Transaction(long userid) {
-        this.userid = userid;
+    public Transaction() {
     }
 
-    public long getId() {
-        return id;
+    public Transaction(User user, Stock stockDetails) {
+        this.user = user;
+        this.stockDetails = stockDetails;
     }
 
-    public void setId(long id) {
-        this.id = id;
+    public Integer getId() {
+        return transactionid;
     }
 
-    public long getUserid() {
-        return userid;
+    public void setId(Integer id) {
+        this.transactionid = id;
     }
 
-    public void setUserid(long userid) {
-        this.userid = userid;
+    public User getUser() {
+        return user;
     }
-    
-    
+
+    public void setUserid(User user) {
+        this.user = user;
+    }
+
+    public Stock getStockDetails() {
+        return stockDetails;
+    }
+
+    public void setStockDetails(Stock stockDetails) {
+        this.stockDetails = stockDetails;
+    }
+
+  
 }

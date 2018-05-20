@@ -14,31 +14,41 @@ import javax.persistence.*;
 @Table(name="Stock")
 public class Stock {
     @Id
-    @Column(name="ID")
+    @Column(name="BookID")
     @GeneratedValue(strategy=GenerationType.IDENTITY)
-    private long id;
+    private Integer bookid;
+    
+    @OneToOne(fetch = FetchType.LAZY, mappedBy = "stockDetails")
+    private Transaction transaction;
     
     @Column(name="Name")
     private String name;
-    
-    @Column(name="Cost")
-    private int cost;
-    
+      
     @Column(name="Quantity")
-    private int quantity;
+    private Integer quantity;
 
     @Override
     public String toString() {
-        return "Stock{" + "id=" + id + ", name=" + name + ", cost=" + cost + ", quantity=" + quantity + '}';
+        return "BookID:" + bookid + ", Title:" + name + ", Quantity:" + quantity;
+    }
+
+    public Stock() {
     }
 
     
-    public long getId() {
-        return id;
+    public Stock(String name, Integer quantity) {
+        this.name = name;
+        this.quantity = quantity;
+    }
+    
+    
+
+    public Integer getBookid() {
+        return bookid;
     }
 
-    public void setId(long id) {
-        this.id = id;
+    public void setBookid(Integer bookid) {
+        this.bookid = bookid;
     }
 
     public String getName() {
@@ -49,21 +59,14 @@ public class Stock {
         this.name = name;
     }
 
-    public int getCost() {
-        return cost;
-    }
-
-    public void setCost(int cost) {
-        this.cost = cost;
-    }
-
     public int getQuantity() {
         return quantity;
     }
 
-    public void setQuantity(int quantity) {
+    public void setQuantity(Integer quantity) {
         this.quantity = quantity;
     }
+
     
     
 }

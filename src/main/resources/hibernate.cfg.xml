@@ -8,5 +8,8 @@
     <property name="hbm2ddl.auto">update</property>
     
     <mapping class="com.oro.entity.User"></mapping>
+    <mapping class="com.oro.entity.Transaction"></mapping>
+    <mapping class="com.oro.entity.Stock"></mapping>
+    
   </session-factory>
 </hibernate-configuration>

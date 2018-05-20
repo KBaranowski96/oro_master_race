@@ -5,6 +5,8 @@
  */
 package com.oro.entity;
 
+import java.util.ArrayList;
+import java.util.List;
 import javax.persistence.*;
 
 /**
@@ -15,9 +17,9 @@ import javax.persistence.*;
 @Table(name="User")
 public class User {
     @Id
-    @Column(name="ID")
+    @Column(name="UserID")
     @GeneratedValue(strategy=GenerationType.IDENTITY)
-    private long userid;
+    private Integer userid;
     
     @Column(name="Name")
     private String name;
@@ -28,21 +30,25 @@ public class User {
     @Column(name="Role")
     private String role;
 
-    public User(String name, String password, String role) {
-        this.name = name;
-        this.password = password;
-        this.role = role;
+    @Column(name="Counter")
+    private Integer counter;
+    
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
+    private List<Transaction> list = new ArrayList<Transaction>();
+
+    @Override
+    public String toString() {
+        return "User{" + "userid=" + userid + ", name=" + name + ", password=" + password + ", role=" + role + ", counter=" + counter + '}';
     }
 
     public User() {
     }
 
-    public long getId() {
-        return userid;
-    }
-
-    public void setId(long userid) {
-        this.userid = userid;
+    public User(String name, String password, String role) {
+        this.name = name;
+        this.password = password;
+        this.role = role;
+        this.counter = 0;
     }
 
     public String getName() {
@@ -69,9 +75,25 @@ public class User {
         this.role = role;
     }
 
-    @Override
-    public String toString() {
-        return "User{" + "id=" + userid + ", name=" + name + ", password=" + password + ", role=" + role + '}';
+    public int getCounter() {
+        return counter;
     }
+
+    public void setCounter(Integer counter) {
+        this.counter = counter;
+    }
+
+    public List<Transaction> getList() {
+        return list;
+    }
+
+    public void setList(List<Transaction> list) {
+        this.list = list;
+    }
+
+    public Integer getUserid() {
+        return userid;
+    }
+    
     
 }
