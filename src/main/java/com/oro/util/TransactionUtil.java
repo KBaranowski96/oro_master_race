@@ -46,6 +46,33 @@ public class TransactionUtil extends Util{
             return null;
         }
     }
+    public static void returnBook(Stock book, User user){
+        prepareSession();
+        String hql = "FROM Transaction WHERE BookID = :n AND UserID = :m ";
+        TypedQuery<Transaction> query = getSession().createQuery(hql);
+        query.setParameter("n", book.getBookid());
+        query.setParameter("m", user.getUserid());
+        try{
+           Transaction transaction = query.getSingleResult();
+           getSession().delete(transaction);
+           commit();
+        }catch(Exception e){
+            System.out.println("Wrong BookID");
+        }
+        
+    }
+    
+    public static void showMyBooks(User user){
+        prepareSession();
+        String hql = "FROM Transaction WHERE UserID = :n";
+        TypedQuery<Transaction> query = getSession().createQuery(hql);
+        query.setParameter("n", user.getUserid()).setMaxResults(1);
+        List<Transaction> results = query.getResultList();
+        while(!results.isEmpty()) 
+        {
+            System.out.println(results.remove(0));
+        }
+    }
     public static Transaction maybeAlreadyHaveOne(Stock book, User user){
         prepareSession();
         String hql = "FROM Transaction WHERE BookID = :n and UserID = :m";

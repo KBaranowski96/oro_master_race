@@ -29,7 +29,7 @@ public class Stock {
 
     @Override
     public String toString() {
-        return "BookID:" + bookid + ", Title:" + name + ", Quantity:" + quantity;
+        return "BookID:" + bookid + ", Title:" + name;
     }
 
     public Stock() {
@@ -41,8 +41,6 @@ public class Stock {
         this.quantity = quantity;
     }
     
-    
-
     public Integer getBookid() {
         return bookid;
     }

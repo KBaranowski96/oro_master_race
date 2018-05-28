@@ -28,6 +28,16 @@ public class UserUtil extends Util{
             return null;
         }
     }
+    
+    public static void printUsers() {
+        prepareSession();
+        String hql = "FROM User";
+        TypedQuery<User> query = getSession().createQuery(hql);
+        List<User> results = query.getResultList();
+        while(!results.isEmpty()) {
+            System.out.println(results.remove(0));
+        }
+    }
 
     public static User createUser(String name, String password, String role){
         prepareSession();

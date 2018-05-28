@@ -26,6 +26,11 @@ public class Transaction {
     @JoinColumn(name="BookID")
     private Stock stockDetails;
 
+    @Override
+    public String toString() {
+        return  "" + stockDetails;
+    }
+
     public Transaction() {
     }
 

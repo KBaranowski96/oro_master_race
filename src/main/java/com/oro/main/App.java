@@ -38,23 +38,38 @@ public class App{
         }
         while(!exitFlag)
         {
-            login();
-            library();  
-            System.out.println("Wanna exit? y/n");
-            String exit = sc.nextLine();
-            if(exit.equals("y"))
+            System.out.println("1: Login");
+            System.out.println("2: Register");
+            System.out.println("0: Exit");
+            String menu = sc.nextLine();
+            switch(Integer.valueOf(menu))
             {
-                exitFlag = true;
+                case 1:
+                    login();
+                    library();
+                    System.out.println("Wanna exit? y/n");
+                    String exit = sc.nextLine();
+                    if(exit.equals("y"))
+                    {
+                        exitFlag = true;
+                    }
+                    else
+                    {
+                        currentUser = null;
+                        loginFlag = true;
+                        passFlag = true;
+                    }
+                    break;
+                case 2:
+                    signUp();
+                    break;
+                case 0:
+                    System.exit(0);
+                default:
+                    System.out.println("Wrong code");
+                    break;
             }
-            else
-            {
-                currentUser = null;
-                loginFlag = true;
-                passFlag = true;
-            }
-        }
-        
-        
+        }      
         sc.close();
         System.exit(0);
     }    
@@ -65,19 +80,35 @@ public class App{
             System.out.println("What would you like to do?");
             System.out.println("1: Browse books");
             System.out.println("2: Borrow a book");
-            System.out.println("3: Logout");
+            System.out.println("3: Return a book");
+            System.out.println("4: Logout");
             if(currentUser.getRole().compareTo("admin") == 0)
-                System.out.println("4: Return a book");
+            {
                 System.out.println("5: Add book into Stock");
+                System.out.println("6: Print all users");
+                System.out.println("7: Add user");
+            }
 
             String choose = sc.nextLine();
             switch(Integer.valueOf(choose))
             {
                 case 1: 
                     List<Stock> stock = StockUtil.getBooks();
-                    while(!stock.isEmpty())
-                    {
-                        System.out.println(stock.remove(0));   
+                    if(stock != null){
+                        while(!stock.isEmpty())
+                        {
+                            if(currentUser.getRole().equals("admin"))
+                            {
+                                Stock item = stock.remove(0);
+                                System.out.print(item);
+                                System.out.println(", Quantity:" + item.getQuantity());
+                            }
+                            else
+                            {
+                                System.out.println(stock.remove(0));
+                            }
+                               
+                        }
                     }
                     break;
                 case 2:
@@ -86,19 +117,62 @@ public class App{
                     TransactionUtil.borrowBook(currentUser,Integer.valueOf(bookID));
                     break;
                 case 3:
-                    loginFlag = false;
+                    System.out.println("Whitch book do you return?");
+                    System.out.println("Enter BookID");
+                    TransactionUtil.showMyBooks(currentUser);
+                    String delete = sc.nextLine();
+                    TransactionUtil.returnBook(StockUtil.getBookById(Integer.valueOf(delete)), currentUser);                
                     break;
                 case 4:
-                    System.out.println("Whitch book has been returned?");
-                    int i = currentUser.getUserid();
+                    loginFlag = false;
                     break;
                 case 5:
-                    if(currentUser.getRole().compareTo("admin") == 0){
+                    if(currentUser.getRole().compareTo("admin") == 0)
+                    {
                         System.out.println("Enter Book Title");
                         String title = sc.nextLine();
                         System.out.println("Enter Quantity");
                         String quantity = sc.nextLine();
                         StockUtil.addBook(title,Integer.valueOf(quantity));
+                    }
+                    else
+                    {
+                        System.out.println("Wrong Code");  
+                    }
+                    break;
+                case 6:
+                    if(currentUser.getRole().compareTo("admin") == 0)
+                    {
+                        UserUtil.printUsers();
+                    }
+                    else
+                    {
+                        System.out.println("Wrong Code");  
+                    }
+                    break;
+                case 7:
+                    if(currentUser.getRole().compareTo("admin") == 0)
+                    {
+                        System.out.println("Enter username");
+                        String username = sc.nextLine();
+                        System.out.println("Enter password");
+                        String password = sc.nextLine();
+                        System.out.println("Choose role");
+                        System.out.println("1: admin");
+                        System.out.println("2: casual");
+                        String ch = sc.nextLine();
+                        switch(Integer.valueOf(ch)){
+                            case 1:
+                                UserUtil.createUser(username, password, "admin");
+                            case 2:
+                                UserUtil.createUser(username, password, "casual");
+                            default:
+                                System.out.println("Something went wrong");
+                        }                        
+                    }
+                    else
+                    {
+                        System.out.println("Wrong Code");  
                     }
                     break;
                 default:
@@ -110,38 +184,45 @@ public class App{
     }
     
     public static void login(){
-        
-        System.out.println("Type Login");
-        String name = sc.nextLine();
-        
-        while(passFlag){
+        int i = 0;
+        while(passFlag)
+        {           
+            System.out.println("Type Login");
+            String name = sc.nextLine();
             System.out.println("Type Password");
             String pass = sc.nextLine();
             currentUser = UserUtil.getUserByUsername(name);
             if(currentUser == null)
             {
-                signUp(name,sc);
-                passFlag = false;
+                System.out.println("Wrong username or password");
             }
             else if(currentUser.getPassword().compareTo(pass) != 0)
             {
-                System.out.println("Wrong password");
+                System.out.println("Wrong username or password");
             }
             else
-            {
+            {   
                 passFlag = false;
+            }
+            i++;
+            if(i>=3){
+                System.out.println("Too many faild attempts");
+                System.out.println("Exit");
+                System.exit(0);
             }
         }
         System.out.println("You have successfully logged in!");  
     }
     
-    public static void signUp(String name, Scanner sc){
+    public static void signUp(){
         System.out.println("You do not have an account");
         System.out.println("Register now");
+        System.out.println("Type username");
+        String username = sc.nextLine();
         System.out.println("Type new password");
         String pass = sc.nextLine();
-        UserUtil.createUser(name, pass, "casual");
+        UserUtil.createUser(username, pass, "casual");
         System.out.println("Succesfuly registered");
-        currentUser = UserUtil.getUserByUsername(name);
+        currentUser = UserUtil.getUserByUsername(username);
     }
 }
